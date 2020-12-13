@@ -1,10 +1,12 @@
 // @ts-check
 import axios from 'axios';
-import $ from 'cheerio';
+import cheerio from 'cheerio';
 import nodemailer from "nodemailer";
 import fs from 'fs';
 import utils from 'util';
 import path from 'path';
+
+const readFileP = utils.promisify(fs.readFile);
 
 // 新书速递
 const newBookUrl = "https://book.douban.com/latest?icn=index-latestbook-all";
@@ -17,29 +19,37 @@ const hotFictionBookUrl = "https://book.douban.com/chart?subcat=F";
 async function getNewBookList() {
     const { data: resp } = await axios.get(newBookUrl);
     let res = "<html>";
-    const links = $(resp).find("#content > div > div.article > ul > li > div > h2 > a").each((index, ele) => {
-        res += `<p><a href="${ele.attribs.href}">${ele.children[0].data}</a></p>`;
-    });
+
+    res += "<h1>虚构类</h1><hr/>";
+    let html$ = cheerio.load(resp);
+    html$("a[class=cover]").remove();
+    html$ = cheerio.load(html$.html());
+    let html = html$('#content > div > div.article > ul');
+    res += html;
+
+    res += "<h1>非虚构类</h1><hr/>";
+    html = html$('#content > div > div.aside > ul');
+    res += html;
     res += "</html>";
+
     return res;
 }
 /**
  * @type {import('./index').ReadConfig}
  */
 async function readConfig() {
-    const readFileP = utils.promisify(fs.readFile);
     const filePath = path.resolve(process.cwd(), './.env.json');
     const jsonStr = (await readFileP(filePath)).toString();
     return JSON.parse(jsonStr);
 }
 /**
- * @description 发送邮件函数
+ * @description 发送邮件
  * @type {import('./index').SendMail}
  */
 async function sendMail(html, config) {
     var user = config.auth.user;//自己的邮箱
     var pass = config.auth.pass; //qq邮箱授权码
-    let transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
         host: "smtp.qq.com",
         port: 587,
         secure: false,
