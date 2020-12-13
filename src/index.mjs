@@ -5,6 +5,8 @@ import nodemailer from "nodemailer";
 import fs from 'fs';
 import utils from 'util';
 import path from 'path';
+import schedule from 'node-schedule';
+import dayjs from 'dayjs';
 
 const readFileP = utils.promisify(fs.readFile);
 
@@ -42,13 +44,11 @@ async function readConfig() {
     const jsonStr = (await readFileP(filePath)).toString();
     return JSON.parse(jsonStr);
 }
-/**
- * @description 发送邮件
- * @type {import('./index').SendMail}
- */
-async function sendMail(html, config) {
-    var user = config.auth.user;//自己的邮箱
-    var pass = config.auth.pass; //qq邮箱授权码
+
+/** @param  config {import('./index').Config} */
+function makeTransporter(config) {
+    const user = config.auth.user;//自己的邮箱
+    const pass = config.auth.pass; //qq邮箱授权码
     const transporter = nodemailer.createTransport({
         host: "smtp.qq.com",
         port: 587,
@@ -58,25 +58,33 @@ async function sendMail(html, config) {
             pass: pass, //授权码,通过QQ获取
         },
     });
+    return transporter;
+}
+
+/**
+ * @description 发送邮件
+ * @type {import('./index').SendMail}
+ */
+async function sendMail(html, config, transporter) {
     await transporter.sendMail({
         from: {
-            name: "一周新书",
+            name: "一周新书推荐",
             address: config.auth.user
         }, // sender address
         to: config.to, // list of receivers
-        subject: "一周新书", // Subject line
+        subject: ["一周新书推荐", dayjs().format('YYYY-MM-DD')].join(' '), // Subject line
         html: html
     });
     console.log("发送成功");
 }
 
-async function run() {
-    await getNewBookList();
-}
-
 async function main() {
     const html = await getNewBookList();
     const config = await readConfig();
-    sendMail(html, config);
+    const transporter = makeTransporter(config);
+    const job = () => sendMail(html, config, transporter);
+    // 每星期六早10点
+    schedule.scheduleJob({ hour: 10, dayOfWeek: 5 }, job);
 }
+
 main();
