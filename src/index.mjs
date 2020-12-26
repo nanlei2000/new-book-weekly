@@ -84,7 +84,7 @@ async function main() {
     const transporter = makeTransporter(config);
     const job = () => sendMail(html, config, transporter);
     // 每星期六早10点
-    schedule.scheduleJob({ hour: 10, dayOfWeek: 5 }, job);
+    schedule.scheduleJob("00 10 * * 6", job);
 }
 
 main();
