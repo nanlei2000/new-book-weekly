@@ -19,72 +19,71 @@ const hotFictionBookUrl = "https://book.douban.com/chart?subcat=F";
 
 
 async function getNewBookList() {
-    const { data: resp } = await axios.get(newBookUrl);
-    let res = "<html>";
+  const { data: resp } = await axios.get(newBookUrl);
+  let res = "<html>";
 
-    res += "<h1>虚构类</h1><hr/>";
-    let html$ = cheerio.load(resp);
-    html$("a[class=cover]").remove();
-    html$ = cheerio.load(html$.html());
-    let html = html$('#content > div > div.article > ul');
-    res += html;
+  res += "<h1>虚构类</h1><hr/>";
+  let html$ = cheerio.load(resp);
+  html$("a[class=cover]").remove();
+  html$ = cheerio.load(html$.html());
+  let html = html$('#content > div > div.article > ul');
+  res += html;
 
-    res += "<h1>非虚构类</h1><hr/>";
-    html = html$('#content > div > div.aside > ul');
-    res += html;
-    res += "</html>";
+  res += "<h1>非虚构类</h1><hr/>";
+  html = html$('#content > div > div.aside > ul');
+  res += html;
+  res += "</html>";
 
-    return res;
+  return res;
 }
 /**
  * @type {import('./index').ReadConfig}
  */
 async function readConfig() {
-    const filePath = path.resolve(process.cwd(), './.env.json');
-    const jsonStr = (await readFileP(filePath)).toString();
-    return JSON.parse(jsonStr);
+  const filePath = path.resolve(process.cwd(), './.env.json');
+  const jsonStr = (await readFileP(filePath)).toString();
+  return JSON.parse(jsonStr);
 }
 
 /** @param  config {import('./index').Config} */
 function makeTransporter(config) {
-    const user = config.auth.user;//自己的邮箱
-    const pass = config.auth.pass; //qq邮箱授权码
-    const transporter = nodemailer.createTransport({
-        host: "smtp.qq.com",
-        port: 587,
-        secure: false,
-        auth: {
-            user: user, // 用户账号
-            pass: pass, //授权码,通过QQ获取
-        },
-    });
-    return transporter;
+  const user = config.auth.user;//自己的邮箱
+  const pass = config.auth.pass; //qq邮箱授权码
+  const transporter = nodemailer.createTransport({
+    host: "smtp.qq.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: user, // 用户账号
+      pass: pass, //授权码,通过QQ获取
+    },
+  });
+  return transporter;
 }
 
 /**
  * @description 发送邮件
  * @type {import('./index').SendMail}
  */
-async function sendMail(html, config, transporter) {
-    await transporter.sendMail({
-        from: {
-            name: "一周新书推荐",
-            address: config.auth.user
-        }, // sender address
-        to: config.to, // list of receivers
-        subject: ["一周新书推荐", dayjs().format('YYYY-MM-DD')].join(' '), // Subject line
-        html: html
-    });
-    console.log("发送成功");
+async function sendMail(config, transporter) {
+  await transporter.sendMail({
+    from: {
+      name: "一周新书推荐",
+      address: config.auth.user
+    }, // sender address
+    to: config.to, // list of receivers
+    subject: ["一周新书推荐", dayjs().format('YYYY-MM-DD')].join(' '), // Subject line
+    html: await getNewBookList()
+  });
+  console.log("发送成功");
 }
 
 async function main() {
-    const html = await getNewBookList();
-    const config = await readConfig();
-    const transporter = makeTransporter(config);
-    const job = () => sendMail(html, config, transporter);
-    // 每星期六早10点
-    schedule.scheduleJob("00 10 * * 6", job);
+  const config = await readConfig();
+  const transporter = makeTransporter(config);
+  const job = () => sendMail(config, transporter);
+  // 每星期六早10点
+  schedule.scheduleJob("00 10 * * 6", job);
 }
 
 main();
