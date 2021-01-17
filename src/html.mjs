@@ -13,6 +13,7 @@ function readHTML() {
 function commitChanges() {
   childProcess.execSync('git add .');
   childProcess.execSync('git commit -m \'html change\'');
+  childProcess.execSync('git push');
 }
 
 /**
