@@ -131,7 +131,6 @@ async function sendMailAndWriteFile(config, transporter) {
 async function main() {
   const config = await readConfig();
   const transporter = makeTransporter(config);
-  sendMailAndWriteFile(config, transporter);
   const job = () => sendMailAndWriteFile(config, transporter);
   // 每星期六早10点
   schedule.scheduleJob("00 10 * * 6", job);
