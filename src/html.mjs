@@ -9,11 +9,17 @@ function readHTML() {
   const html = fs.readFileSync(filePath, "utf-8").toString();
   return html;
 }
-
+// commit html then the online website will refresh
 function commitChanges() {
-  childProcess.execSync('git add .');
-  childProcess.execSync('git commit -m \'html change\'');
-  childProcess.execSync('git push');
+  const commands = [
+    'git pull origin master',
+    'git add .',
+    'git commit -m \'html change\'',
+    'git push origin master',
+  ];
+  for (const cmd of commands) {
+    childProcess.execSync(cmd);
+  }
 }
 
 /**
