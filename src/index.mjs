@@ -37,7 +37,10 @@ async function fetchDoubanHTML(retryCount) {
         "sec-fetch-site": "none",
         "sec-fetch-user": "?1",
         "upgrade-insecure-requests": "1",
-        "cookie": "bid=nqfCgMsvbW0"
+        "cookie": "bid=nqfCgMsvbW0",
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36"
       }
     });
     return resp;
@@ -47,7 +50,7 @@ async function fetchDoubanHTML(retryCount) {
     console.log("Fetch douban HTML " + retryCount);
     return await req();
   } catch (error) {
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 2000));
     return fetchDoubanHTML(retryCount - 1);
   }
 }
@@ -56,7 +59,7 @@ async function fetchDoubanHTML(retryCount) {
  * @returns {Promise<[string,string]>}
  */
 async function getNewBookList() {
-  const resp = await fetchDoubanHTML(5);
+  const resp = await fetchDoubanHTML(500);
   const dateStr = dayjs().format('YYYY-MM-DD');
   let mailHTML = "<html>";
   let fileHTML = "";
