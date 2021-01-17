@@ -114,7 +114,7 @@ function makeTransporter(config) {
  */
 async function sendMailAndWriteFile(config, transporter) {
   const [mailHTML, fileHTML] = await getNewBookList();
-  !isTesting && await transporter.sendMail({
+  await transporter.sendMail({
     from: {
       name: "一周新书推荐",
       address: config.auth.user
