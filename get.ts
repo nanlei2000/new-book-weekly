@@ -12,7 +12,7 @@ export async function fetchHTML(
     return log.error("Fail to fetch douban HTML");
   }
   try {
-    log.info("Fetch douban HTML " + retryCount);
+    log.info(`Fetch douban HTML, rest ${retryCount} times`);
     const raw = await fetch(newBookUrl);
     return raw.text();
   } catch (error) {
@@ -22,7 +22,12 @@ export async function fetchHTML(
   }
 }
 
-export function getNewBookList(rawHtml: string): [string, string] {
+export interface BookList {
+  mailHTML: string;
+  fileHTML: string;
+}
+
+export function getNewBookList(rawHtml: string): BookList {
   const dateStr = dayjs().format("YYYY-MM-DD");
   let mailHTML = "<html>";
   let fileHTML = "";
@@ -46,5 +51,5 @@ export function getNewBookList(rawHtml: string): [string, string] {
   fileHTML += html;
 
   mailHTML += "</html>";
-  return [mailHTML, fileHTML] as [string, string];
+  return { mailHTML, fileHTML };
 }

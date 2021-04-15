@@ -34,6 +34,6 @@ Deno.test({
     assert(err === nil);
     const raw = (await fetchHTML(1))!;
     const html = getNewBookList(raw);
-    await sendMail(res!, html[0]);
+    await sendMail(res!, html.mailHTML);
   },
 });

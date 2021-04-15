@@ -35,7 +35,7 @@ export async function sendMail(config: Config, html: string) {
   await client.send({
     from: config.auth.user,
     to: config.to,
-    subject: ["一周新书推荐", dayjs().format("YYYY-MM-DD")].join(" "),
+    subject: `一周新书推荐 ${dayjs().format("YYYY-MM-DD")}`,
     content: "",
     html: html,
   });

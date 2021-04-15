@@ -16,10 +16,10 @@ export async function doJob() {
     return;
   }
   const html = getNewBookList(raw);
-  await sendMail(cfg!, html[0]);
+  await sendMail(cfg!, html.mailHTML);
 
   if (cfg!.commitToGit) {
-    const newHTML = appendToHTML(readHTML(), html[1]);
+    const newHTML = appendToHTML(readHTML(), html.fileHTML);
     writeHTML(newHTML);
     commitChanges();
   }
