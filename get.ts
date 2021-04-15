@@ -1,5 +1,6 @@
 import { cheerio } from "https://deno.land/x/cheerio@1.0.4/mod.ts";
 import dayjs from "https://cdn.skypack.dev/dayjs@1.10.4";
+import * as log from "https://deno.land/std@0.93.0/log/mod.ts";
 
 const newBookUrl = "https://book.douban.com/latest?icn=index-latestbook-all";
 
@@ -13,10 +14,10 @@ export async function fetchHTML(retryCount: number): Promise<string | void> {
   };
 
   try {
-    console.log("Fetch douban HTML " + retryCount);
+    log.info("Fetch douban HTML " + retryCount);
     return await req();
   } catch (error) {
-    console.error(error);
+    log.error(error);
     await new Promise((r) => setTimeout(r, 2000));
     return fetchHTML(retryCount - 1);
   }
