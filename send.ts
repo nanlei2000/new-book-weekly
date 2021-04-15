@@ -1,44 +1,44 @@
-interface Config {
+import { SmtpClient } from "https://deno.land/x/smtp/mod.ts";
+import dayjs from "https://cdn.skypack.dev/dayjs@1.10.4";
+import { MaybeNil, nil } from "./error.ts";
+
+export interface Config {
   auth: {
     user: string;
     pass: string;
   };
   to: string;
+  commitToGit: boolean;
 }
 
-async function readConfig() {
-  const filePath = path.resolve(process.cwd(), "./.env.json");
-  const jsonStr = (await readFileP(filePath)).toString();
-  return JSON.parse(jsonStr);
+export function readConfig(path: string): MaybeNil<[Config, Error]> {
+  const decoder = new TextDecoder("utf-8");
+  const data = Deno.readFileSync(path);
+  const str = decoder.decode(data);
+  try {
+    return [JSON.parse(str), nil];
+  } catch (error) {
+    return [null, error];
+  }
 }
 
-function makeTransporter(config) {
-  const user = config.auth.user; //自己的邮箱
-  const pass = config.auth.pass; //qq邮箱授权码
-  const transporter = nodemailer.createTransport({
-    host: "smtp.qq.com",
+export async function sendMail(config: Config, html: string) {
+  const client = new SmtpClient();
+
+  await client.connect({
+    hostname: "smtp.qq.com",
     port: 587,
-    secure: false,
-    auth: {
-      user: user, // 用户账号
-      pass: pass, //授权码,通过QQ获取
-    },
-  });
-  return transporter;
-}
-
-async function sendMailAndWriteFile(config, transporter) {
-  const [mailHTML, fileHTML] = await getNewBookList();
-  await transporter.sendMail({
-    from: {
-      name: "一周新书推荐",
-      address: config.auth.user,
-    }, // sender address
-    to: config.to, // list of receivers
-    subject: ["一周新书推荐", dayjs().format("YYYY-MM-DD")].join(" "), // Subject line
-    html: mailHTML,
+    username: config.auth.user,
+    password: config.auth.pass,
   });
 
-  appendToHTML(fileHTML);
-  console.log("发送成功");
+  await client.send({
+    from: config.auth.user,
+    to: config.to,
+    subject: ["一周新书推荐", dayjs().format("YYYY-MM-DD")].join(" "),
+    content: "",
+    html: html,
+  });
+
+  await client.close();
 }

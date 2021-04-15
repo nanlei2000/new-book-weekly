@@ -1,24 +1,23 @@
 import { cheerio } from "https://deno.land/x/cheerio@1.0.4/mod.ts";
 import dayjs from "https://cdn.skypack.dev/dayjs@1.10.4";
 import * as log from "https://deno.land/std@0.93.0/log/mod.ts";
+import { delay } from "https://deno.land/std@0.93.0/async/delay.ts";
 
 const newBookUrl = "https://book.douban.com/latest?icn=index-latestbook-all";
 
-export async function fetchHTML(retryCount: number): Promise<string | void> {
+export async function fetchHTML(
+  retryCount: number,
+): Promise<string | undefined> {
   if (retryCount <= 0) {
-    return console.log("Fail to fetch douban HTML");
+    return log.error("Fail to fetch douban HTML");
   }
-  const req = async () => {
-    const raw = await fetch(newBookUrl);
-    return raw.text();
-  };
-
   try {
     log.info("Fetch douban HTML " + retryCount);
-    return await req();
+    const raw = await fetch(newBookUrl);
+    return raw.text();
   } catch (error) {
-    log.error(error);
-    await new Promise((r) => setTimeout(r, 2000));
+    log.warning(error);
+    await delay(1000);
     return fetchHTML(retryCount - 1);
   }
 }
@@ -34,16 +33,18 @@ export function getNewBookList(rawHtml: string): [string, string] {
   let html$ = cheerio.load(rawHtml);
   html$("a[class=cover]").remove();
   html$ = cheerio.load(html$.html());
+
   let html = html$("#content > div > div.article > ul");
   mailHTML += html;
   fileHTML += html;
 
   mailHTML += "<h1>非虚构类</h1><hr/>";
   fileHTML += `<h1>${dateStr}&nbsp非虚构类</h1><hr/>`;
+
   html = html$("#content > div > div.aside > ul");
   mailHTML += html;
   fileHTML += html;
-  mailHTML += "</html>";
 
+  mailHTML += "</html>";
   return [mailHTML, fileHTML] as [string, string];
 }
