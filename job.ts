@@ -16,9 +16,11 @@ export async function doJob() {
     return;
   }
   const html = getNewBookList(raw);
-  await sendMail(cfg!, html.mailHTML);
 
-  if (cfg!.commitToGit) {
+  if (cfg!.notify) {
+    await sendMail(cfg!, html.mailHTML);
+  }
+  if (cfg!.syncToRemote) {
     const newHTML = appendToHTML(readHTML("index.html"), html.fileHTML);
     writeHTML(newHTML);
     commitChanges("html change");

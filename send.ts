@@ -8,7 +8,8 @@ export interface Config {
     pass: string;
   };
   to: string;
-  commitToGit: boolean;
+  syncToRemote: boolean;
+  notify: boolean;
 }
 
 export function readConfig(path: string): MaybeNil<[Config, Error]> {

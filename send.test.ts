@@ -12,7 +12,7 @@ Deno.test("readConfig", () => {
       "pass": "pass",
     },
     "to": "to",
-    "commitToGit": false,
+    "syncToRemote": false,
   });
 });
 
