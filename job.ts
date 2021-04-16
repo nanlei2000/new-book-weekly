@@ -19,8 +19,8 @@ export async function doJob() {
   await sendMail(cfg!, html.mailHTML);
 
   if (cfg!.commitToGit) {
-    const newHTML = appendToHTML(readHTML(), html.fileHTML);
+    const newHTML = appendToHTML(readHTML("index.html"), html.fileHTML);
     writeHTML(newHTML);
-    commitChanges();
+    commitChanges("html change");
   }
 }

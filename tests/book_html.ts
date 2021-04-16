@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+export const bookHTML = `<!DOCTYPE html>
 <!-- saved from url=(0055)https://book.douban.com/latest?icn=index-latestbook-all -->
 <html lang="zh-cmn-Hans" class="ua-mac ua-webkit book-new-nav">
 
@@ -1367,4 +1367,4 @@
   </div>
 </body>
 
-</html>
+</html>`;

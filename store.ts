@@ -1,16 +1,16 @@
 const SEP_TAG = "<!-- SEP-1511151742953336 -->";
 
-export function readHTML(): string {
+export function readHTML(path: string): string {
   const decoder = new TextDecoder("utf-8");
-  const data = Deno.readFileSync("index.html");
+  const data = Deno.readFileSync(path);
   return decoder.decode(data);
 }
 
-export function commitChanges(): void {
+export function commitChanges(commitMsg: string): void {
   const commands = [
     ["git", "pull origin master"],
     ["git", "add ."],
-    ["git", "commit -m 'html change'"],
+    ["git", `commit -m '${commitMsg}'`],
     ["git", "push origin master"],
   ];
   for (const cmd of commands) {

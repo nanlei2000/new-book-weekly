@@ -1,5 +1,6 @@
 import { assert } from "https://deno.land/std@0.93.0/testing/asserts.ts";
 import { fetchHTML, getNewBookList } from "./get.ts";
+import { bookHTML } from "./tests/book_html.ts";
 
 Deno.test("fetchHTML", async () => {
   const res = await fetchHTML(100);
@@ -8,9 +9,7 @@ Deno.test("fetchHTML", async () => {
 });
 
 Deno.test("getNewBookList", () => {
-  const decoder = new TextDecoder("utf-8");
-  const bytes = Deno.readFileSync("tests/new_book.test.html");
-  const res = getNewBookList(decoder.decode(bytes));
+  const res = getNewBookList(bookHTML);
   assert(res.fileHTML.includes('<div class="detail-frame">'));
   assert(res.mailHTML.includes('<div class="detail-frame">'));
 });
