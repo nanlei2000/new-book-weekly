@@ -1,6 +1,6 @@
 import { dirname, fromFileUrl } from "https://deno.land/std@0.93.0/path/mod.ts";
 import * as log from "https://deno.land/std@0.93.0/log/mod.ts";
-const SEP_TAG = "<!-- SEP-1511151742953336 -->";
+export const SEP_TAG = "<!-- SEP-1511151742953336 -->";
 const moduleDir = dirname(fromFileUrl(import.meta.url));
 
 export async function commitChanges(commitMsg: string): Promise<void> {
