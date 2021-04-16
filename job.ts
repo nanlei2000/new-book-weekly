@@ -1,8 +1,9 @@
 import { fetchHTML, getNewBookList } from "./get.ts";
 import { readConfig, sendMail } from "./send.ts";
-import { appendToHTML, commitChanges, readHTML, writeHTML } from "./store.ts";
+import { appendToHTML, commitChanges, writeHTML } from "./store.ts";
+import { readFile } from "./utils.ts";
 import * as log from "https://deno.land/std@0.93.0/log/mod.ts";
-import { nil } from "./error.ts";
+import { nil } from "./utils.ts";
 
 export async function doJob() {
   const [cfg, err] = readConfig(".env.json");
@@ -21,7 +22,8 @@ export async function doJob() {
     await sendMail(cfg!, html.mailHTML);
   }
   if (cfg!.syncToRemote) {
-    const newHTML = appendToHTML(readHTML("index.html"), html.fileHTML);
+    const old = readFile("index.html");
+    const newHTML = appendToHTML(old, html.fileHTML);
     writeHTML(newHTML);
     commitChanges("html change");
   }

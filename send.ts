@@ -1,6 +1,6 @@
 import { SmtpClient } from "https://deno.land/x/smtp/mod.ts";
 import dayjs from "https://cdn.skypack.dev/dayjs@1.10.4";
-import { MaybeNil, nil } from "./error.ts";
+import { MaybeNil, nil, readFile } from "./utils.ts";
 
 export interface Config {
   auth: {
@@ -13,9 +13,7 @@ export interface Config {
 }
 
 export function readConfig(path: string): MaybeNil<[Config, Error]> {
-  const decoder = new TextDecoder("utf-8");
-  const data = Deno.readFileSync(path);
-  const str = decoder.decode(data);
+  const str = readFile(path);
   try {
     return [JSON.parse(str), nil];
   } catch (error) {

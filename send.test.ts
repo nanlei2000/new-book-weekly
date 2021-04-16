@@ -1,7 +1,7 @@
 import { assert, equal } from "https://deno.land/std@0.93.0/testing/asserts.ts";
 import { Config, readConfig, sendMail } from "./send.ts";
 import { fetchHTML, getNewBookList } from "./get.ts";
-import { nil } from "./error.ts";
+import { nil } from "./utils.ts";
 
 Deno.test("readConfig", () => {
   const [res, err] = readConfig("tests/.env.test.json");

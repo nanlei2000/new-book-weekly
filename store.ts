@@ -1,22 +1,26 @@
+import { dirname, fromFileUrl } from "https://deno.land/std@0.93.0/path/mod.ts";
+import * as log from "https://deno.land/std@0.93.0/log/mod.ts";
 const SEP_TAG = "<!-- SEP-1511151742953336 -->";
+const moduleDir = dirname(fromFileUrl(import.meta.url));
 
-export function readHTML(path: string): string {
-  const decoder = new TextDecoder("utf-8");
-  const data = Deno.readFileSync(path);
-  return decoder.decode(data);
-}
-
-export function commitChanges(commitMsg: string): void {
+export async function commitChanges(commitMsg: string): Promise<void> {
   const commands = [
-    ["git", "pull origin master"],
-    ["git", "add ."],
-    ["git", `commit -m '${commitMsg}'`],
-    ["git", "push origin master"],
+    ["git", "pull", "origin", "master"],
+    ["git", "add", "."],
+    ["git", "commit", "-m", `'${commitMsg}'`],
+    ["git", "push", "origin", "master"],
   ];
+  const decoder = new TextDecoder("utf-8");
   for (const cmd of commands) {
-    Deno.run({
+    const p = Deno.run({
       cmd,
+      cwd: moduleDir,
+      stdout: "piped",
     });
+    const output = await p.output();
+    const text = decoder.decode(output);
+    log.info(text);
+    p.close();
   }
 }
 
