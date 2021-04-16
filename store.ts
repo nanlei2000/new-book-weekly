@@ -7,7 +7,7 @@ export async function commitChanges(commitMsg: string): Promise<void> {
   const commands = [
     ["git", "pull", "origin", "master"],
     ["git", "add", "."],
-    ["git", "commit", "-m", `'${commitMsg}'`],
+    ["git", "commit", "-m", commitMsg],
     ["git", "push", "origin", "master"],
   ];
   const decoder = new TextDecoder("utf-8");

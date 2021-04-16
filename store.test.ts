@@ -3,6 +3,6 @@ Deno.test({
   name: "commitChanges",
   ignore: !true,
   fn: async () => {
-    await commitChanges("test");
+    await commitChanges("fix commit msg");
   },
 });
