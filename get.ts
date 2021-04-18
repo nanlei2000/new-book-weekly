@@ -1,7 +1,4 @@
-import { cheerio } from "https://deno.land/x/cheerio@1.0.4/mod.ts";
-import dayjs from "https://cdn.skypack.dev/dayjs@1.10.4";
-import * as log from "https://deno.land/std@0.93.0/log/mod.ts";
-import { delay } from "https://deno.land/std@0.93.0/async/delay.ts";
+import { cheerio, dayjs, delay, log } from "./dep.ts";
 
 const newBookUrl = "https://book.douban.com/latest?icn=index-latestbook-all";
 

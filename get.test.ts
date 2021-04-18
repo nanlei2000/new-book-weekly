@@ -1,4 +1,4 @@
-import { assert } from "https://deno.land/std@0.93.0/testing/asserts.ts";
+import { assert } from "./dep.ts";
 import { fetchHTML, getNewBookList } from "./get.ts";
 import { bookHTML } from "./tests/book_html.ts";
 

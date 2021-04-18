@@ -1,5 +1,4 @@
-import { SmtpClient } from "https://deno.land/x/smtp/mod.ts";
-import dayjs from "https://cdn.skypack.dev/dayjs@1.10.4";
+import { dayjs, SmtpClient } from "./dep.ts";
 import { MaybeNil, nil, readFile } from "./utils.ts";
 
 export interface Config {
@@ -13,8 +12,8 @@ export interface Config {
 }
 
 export function readConfig(path: string): MaybeNil<[Config, Error]> {
-  const str = readFile(path);
   try {
+    const str = readFile(path);
     return [JSON.parse(str), nil];
   } catch (error) {
     return [null, error];

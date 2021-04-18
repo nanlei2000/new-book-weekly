@@ -1,4 +1,4 @@
-import { assert, equal } from "https://deno.land/std@0.93.0/testing/asserts.ts";
+import { assert, equal } from "./dep.ts";
 import { Config, readConfig, sendMail } from "./send.ts";
 import { fetchHTML, getNewBookList } from "./get.ts";
 import { nil } from "./utils.ts";

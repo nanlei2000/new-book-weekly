@@ -2,7 +2,7 @@ import { fetchHTML, getNewBookList } from "./get.ts";
 import { readConfig, sendMail } from "./send.ts";
 import { appendToHTML, commitChanges, writeHTML } from "./store.ts";
 import { readFile } from "./utils.ts";
-import * as log from "https://deno.land/std@0.93.0/log/mod.ts";
+import { log } from "./dep.ts";
 import { nil } from "./utils.ts";
 
 export async function doJob() {

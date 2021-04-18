@@ -1,5 +1,4 @@
-import { dirname, fromFileUrl } from "https://deno.land/std@0.93.0/path/mod.ts";
-import * as log from "https://deno.land/std@0.93.0/log/mod.ts";
+import { dirname, fromFileUrl, log } from "./dep.ts";
 export const SEP_TAG = "<!-- SEP-1511151742953336 -->";
 const moduleDir = dirname(fromFileUrl(import.meta.url));
 

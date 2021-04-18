@@ -4,7 +4,7 @@ Deno.test({
   name: "commitChanges",
   ignore: !true,
   fn: async () => {
-    await commitChanges("add test");
+    await commitChanges("use dep.ts to organize import");
   },
 });
 

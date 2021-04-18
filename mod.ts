@@ -1,5 +1,4 @@
-import * as log from "https://deno.land/std@0.93.0/log/mod.ts";
-import { cron } from "https://deno.land/x/deno_cron/cron.ts";
+import { cron, log } from "./dep.ts";
 import { doJob } from "./job.ts";
 
 // 每星期六早10点
