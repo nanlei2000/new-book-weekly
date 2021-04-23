@@ -28,9 +28,3 @@ export function appendToHTML(original: string, newHtml: string): string {
   const modifiedHtml = [head, newHtml + tail].join(SEP_TAG + "\n");
   return modifiedHtml;
 }
-
-export function writeHTML(html: string): void {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(html);
-  Deno.writeFileSync("index.html", data);
-}

@@ -9,3 +9,9 @@ export function readFile(path: string): string {
   const data = Deno.readFileSync(path);
   return decoder.decode(data);
 }
+
+export function writeFile(content: string, path: string): void {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(content);
+  Deno.writeFileSync(path, data);
+}

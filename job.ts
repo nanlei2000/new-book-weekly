@@ -1,7 +1,7 @@
 import { fetchHTML, getNewBookList } from "./get.ts";
 import { readConfig, sendMail } from "./send.ts";
-import { appendToHTML, commitChanges, writeHTML } from "./store.ts";
-import { readFile } from "./utils.ts";
+import { appendToHTML, commitChanges } from "./store.ts";
+import { readFile, writeFile } from "./utils.ts";
 import { log } from "./dep.ts";
 import { nil } from "./utils.ts";
 
@@ -24,7 +24,7 @@ export async function doJob() {
   if (cfg!.syncToRemote) {
     const old = readFile("index.html");
     const newHTML = appendToHTML(old, html.fileHTML);
-    writeHTML(newHTML);
+    writeFile(newHTML, "www/index.html");
     commitChanges("html change");
   }
 }
