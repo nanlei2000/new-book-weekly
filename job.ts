@@ -24,7 +24,7 @@ export async function doJob() {
   if (cfg!.syncToRemote) {
     const old = readFile("index.html");
     const newHTML = appendToHTML(old, html.fileHTML);
-    writeFile(newHTML, "www/index.html");
+    writeFile(newHTML, "index.html");
     commitChanges("html change");
   }
 }
